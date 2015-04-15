@@ -161,6 +161,18 @@ if ($status != 'Email does not exist in list') {
 }
 echo "Manually inserted site with emailalert==0 was correctly left unsubscribed\n";
 
+// If a subscribed email belongs to a site that unregisters it stays subscribed.
+// Not being associated with a currently registered site could be considered grounds for unsubscription.
+$hub->unregister_site($site2);
+$status = get_sendy_status($sendyurl, $sendyapikey, $sendylistid, $testemail2);
+if ($status != 'Subscribed') {
+    delete_test_site($site->id);
+    echo "Unregistered site should have stayed subscribed\n";
+    echo "status returned (".$status.")\n";
+    die;
+}
+echo "Unregistered site was correcly left subscribed\n";
+
 delete_test_site($site->id);
 delete_test_site($site2->id);
 delete_test_site($site3->id);
